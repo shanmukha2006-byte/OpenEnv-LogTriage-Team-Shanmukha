@@ -15,6 +15,7 @@ def run_task(difficulty):
 
     while not done:
 
+        # Find CRITICAL log manually
         critical_id = -1
 
         for log in obs.logs:
@@ -48,13 +49,16 @@ def run_inference(payload=None):
 
     results = {}
 
-    for diff in ["easy", "medium", "hard"]:
+    difficulties = ["easy", "medium", "hard"]
 
-        try:
-            score = run_task(diff)
-            results[diff] = score
+    for diff in difficulties:
 
-        except Exception as e:
-            results[diff] = str(e)
+        score = run_task(diff)
+
+        results[diff] = score
 
     return results
+
+if __name__ == "__main__":
+
+    run_inference()
