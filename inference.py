@@ -10,7 +10,6 @@ MODEL_NAME = "gpt-4o-mini"
 
 
 def create_client():
-    """Create OpenAI client safely"""
 
     api_base = os.environ.get("API_BASE_URL")
 
@@ -18,6 +17,7 @@ def create_client():
         os.environ.get("OPENAI_API_KEY")
         or os.environ.get("API_KEY")
         or os.environ.get("LITELLM_API_KEY")
+        or "dummy-key"   # prevents crash
     )
 
     return OpenAI(
@@ -35,7 +35,7 @@ def parse_response(text):
             data = json.loads(match.group())
             return int(data["identified_log_id"])
 
-    except Exception:
+    except:
         pass
 
     return -1
@@ -120,7 +120,14 @@ def run_inference(payload=None):
 
     for diff in ["easy", "medium", "hard"]:
 
-        results[diff] = run_task(diff)
+        try:
+            results[diff] = run_task(diff)
+
+        except Exception as e:
+
+            print(f"[ERROR] {e}", flush=True)
+
+            results[diff] = 0.0
 
     return results
 
